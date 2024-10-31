@@ -9,11 +9,13 @@ export interface InterComponent {
 }
 interface State {
   components: InterComponent[];
+  currentComponentId?:number
 }
 interface Action {
   addComponent: (component: InterComponent, parentId?: number) => void;
   updateComponent: (componentId: number, props: any) => void;
   deleteComponent: (componentId: number) => void;
+  setCurrentComponentId:(id:number)=>void
 }
 // 获取节点
 export const getComponent = (
@@ -40,6 +42,10 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
       props: {}
     },
   ],
+  currentComponentId:undefined,
+  setCurrentComponentId:(id:number)=>{
+    set({currentComponentId:id})
+  },
   addComponent: (component, parentId) => {
     set((state) => {
       if (parentId) {
