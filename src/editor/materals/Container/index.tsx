@@ -26,8 +26,8 @@ const Container = ({id,name,children}:CommonComponentProps) => {
         },
         onDragLeave: () => setIsDraggedOver(false),
         onDrop: ({location,source}) => {
-          if(location.current.dropTargets[0].data.name != "Container") return
-          if(source.data.name&&config){
+          if((location.current.dropTargets[0].element as HTMLElement).dataset.componentId != id+'') return
+          if(source.data.name && config){
             let newConfig = Object.values(config)
             let component = newConfig.find(item=>item.name==source.data.name)
             if(component){
@@ -42,6 +42,6 @@ const Container = ({id,name,children}:CommonComponentProps) => {
         },
     });
 }, []);
-  return <div ref={ref} className={clsx('min-h-[100px] p-[20px]',isDraggedOver?"border-dashed border-[1px] border-blue-500":'border-[1px] border-[#000]')}>{children}</div>
+  return <div ref={ref} data-component-id={id} className={clsx('min-h-[100px] p-[20px]',isDraggedOver?"border-dashed border-[1px] border-blue-500":'border-[1px] border-[#000]')}>{children}</div>
 }
 export default Container

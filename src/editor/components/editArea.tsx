@@ -1,16 +1,19 @@
-import React from "react";
+import {createElement,useState} from "react";
 import { useComponentsStore } from "../../stores/components";
 import { useComponentsConfigStore } from "../../stores/config";
 import {type InterComponent} from '../../stores/components'
+import {HoverMasker} from './hoverMasker'
+
 function EditArea(){
   const { components } = useComponentsStore();
   const {config} = useComponentsConfigStore()
+  const [hoverComponentId, setHoverComponentId] = useState<number>();
 
   const renderComponents = (components:InterComponent[]): React.ReactNode=>{
     return components.map(item=>{
       const componentConfig = config[item.name]
       if(!componentConfig) return null
-      return React.createElement(
+      return createElement(
         componentConfig.component,
         {
           key:item.id,
@@ -23,10 +26,23 @@ function EditArea(){
       )
     })
   }
+  const handleMouseOver = (e:any)=>{
+    const path = e.nativeEvent.composedPath();
+
+    for (let i = 0; i < path.length; i += 1) {
+        const ele = path[i] as HTMLElement;
+
+        const componentId = ele.dataset?.componentId;
+        if (componentId) {
+            setHoverComponentId(+componentId);
+            return;
+        }
+    }
+  }
   return (
-    <div>
-      <h1>编辑区域</h1>
+    <div className="edit-wrapper" onMouseOver={handleMouseOver} onMouseOut={()=>setHoverComponentId(undefined)}>
       <div>{renderComponents(components)}</div>
+      {hoverComponentId && <HoverMasker componentId={hoverComponentId} wrapperClassName="edit-wrapper"/>}
     </div>
   );
 }
