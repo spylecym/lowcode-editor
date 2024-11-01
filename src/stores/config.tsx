@@ -5,6 +5,7 @@ import Page from "../editor/materals/Page";
 
 interface Config {
   name: string;
+  describe:string;
   defaultProps: Record<string, any>;
   component: any;
 }
@@ -18,16 +19,19 @@ export const useComponentsConfigStore = create<State & Action>((set) => ({
   config: {
     Page:{
       name: "Page",
+      describe:'页面',
       defaultProps: {},
       component: Page
     },
     Container:{
       name: "Container",
+      describe:'容器',
       defaultProps: {},
       component: Container
     },
     Button:{
       name: "Button",
+      describe:'按钮',
       defaultProps: {
         text: "按钮",
         type: "primary",

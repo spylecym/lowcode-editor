@@ -34,6 +34,7 @@ const Container = ({id,name,children}:CommonComponentProps) => {
               addComponent({
                 id:new Date().getTime(),
                 name:component.name,
+                describe:component.describe,
                 props:component.defaultProps
               },id)
             }

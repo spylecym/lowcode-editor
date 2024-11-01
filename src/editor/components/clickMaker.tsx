@@ -6,10 +6,11 @@ import { useComponentsStore, getComponent } from "../../stores/components";
 import { useEffect, useMemo, useState } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import type { PopconfirmProps } from "antd";
-import { message, Popconfirm } from "antd";
+import { message, Popconfirm, Dropdown } from "antd";
 
 const ClickMaker = ({ componentId, wrapperClassName }: ClickMakerProps) => {
-  const { components,deleteComponent,setCurrentComponentId } = useComponentsStore();
+  const { components, deleteComponent, setCurrentComponentId } =
+    useComponentsStore();
   const [position, setPosition] = useState({
     width: 0,
     height: 0,
@@ -43,11 +44,11 @@ const ClickMaker = ({ componentId, wrapperClassName }: ClickMakerProps) => {
   };
   useEffect(() => {
     updatePosition();
-  }, [componentId]);
+  }, [componentId, components]);
 
   const labelName = useMemo(() => {
     const component = getComponent(componentId, components);
-    return component?.name || "";
+    return component?.describe || "";
   }, [componentId]);
 
   const confirm: PopconfirmProps["onConfirm"] = () => {
@@ -55,6 +56,26 @@ const ClickMaker = ({ componentId, wrapperClassName }: ClickMakerProps) => {
     setCurrentComponentId(0);
     message.success("Click on Yes");
   };
+
+  const parentComponents = useMemo(() => {
+    let arr = [];
+    let component = getComponent(componentId, components);
+    while (component?.parentId) {
+      component = getComponent(component.parentId, components);
+      if(component?.id!=1) arr.push(component);
+    }
+    return arr;
+  }, [componentId, components]);
+
+  useEffect(() => {
+    const resizeHandler = () => {
+      updatePosition();
+    }
+    window.addEventListener('resize', resizeHandler)
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+    }
+}, []);
 
   return (
     <>
@@ -74,37 +95,52 @@ const ClickMaker = ({ componentId, wrapperClassName }: ClickMakerProps) => {
         }}
       />
       <div
+      className="flex gap-2"
         style={{
           position: "absolute",
           left: position.labelLeft,
           top: position.labelTop,
           fontSize: "14px",
           zIndex: 13,
-          display: !position.width || position.width < 10 ? "none" : "inline",
           transform: "translate(-100%, -100%)",
         }}
       >
-        <div
-          style={{
-            padding: "0 8px",
-            backgroundColor: "blue",
-            borderRadius: 4,
-            color: "#fff",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
+        <Dropdown
+          menu={{
+            items: parentComponents.map((item) => {
+              return {
+                label: item?.describe!,
+                key: item?.id!,
+              };
+            }),
+            onClick: ({ key }) => {
+              setCurrentComponentId(+key);
+            },
           }}
+          disabled={parentComponents.length === 0}
         >
-          {labelName}
-          <Popconfirm
-            title="Delete the task"
-            description="Are you sure to delete this task?"
-            onConfirm={confirm}
-            okText="Yes"
-            cancelText="No"
+          <div
+            style={{
+              padding: "0 8px",
+              backgroundColor: "blue",
+              borderRadius: 4,
+              color: "#fff",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
           >
-            <DeleteOutlined className="ml-2" />
-          </Popconfirm>
-        </div>
+            {labelName}
+          </div>
+        </Dropdown>
+        <Popconfirm
+          title="Delete the task"
+          description="Are you sure to delete this task?"
+          onConfirm={confirm}
+          okText="Yes"
+          cancelText="No"
+        >
+          <DeleteOutlined />
+        </Popconfirm>
       </div>
     </>
   );

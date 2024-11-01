@@ -11,7 +11,7 @@ function Materail() {
       {
         components&&components.length>0?
         components.map(item=>{
-          return <MaterailItem key={item.name} name={item.name}></MaterailItem>
+          return <MaterailItem key={item.name} name={item.name} describe={item.describe}></MaterailItem>
         }):null
       }
     </div>

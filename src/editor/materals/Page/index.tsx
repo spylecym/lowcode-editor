@@ -37,6 +37,7 @@ function Page({ id,name, children }: CommonComponentProps) {
                 {
                   id: new Date().getTime(),
                   name: component.name,
+                  describe:component.describe,
                   props: component.defaultProps,
                 },
                 id

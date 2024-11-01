@@ -21,6 +21,7 @@ function EditArea() {
           key: item.id,
           id: item.id,
           name: item.name,
+          describe: item.describe,
           ...componentConfig.defaultProps,
           ...item.props,
         },
@@ -57,7 +58,7 @@ function EditArea() {
       onClick={handleClick}
     >
       <div>{renderComponents(components)}</div>
-      {hoverComponentId && (
+      {hoverComponentId &&hoverComponentId!=currentComponentId&& (
         <HoverMasker
           componentId={hoverComponentId}
           wrapperClassName="edit-wrapper"

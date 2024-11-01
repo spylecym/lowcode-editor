@@ -3,6 +3,7 @@ import { create } from "zustand";
 export interface InterComponent {
   id: number; //标识id
   name: string; //组件名称
+  describe: string; //组件描述
   props: any; //组件属性
   children?: InterComponent[]; //子组件
   parentId?: number; //父组件id
@@ -39,6 +40,7 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
     {
       id: 1,
       name: "Page",
+      describe:'页面',
       props: {}
     },
   ],

@@ -42,11 +42,11 @@ const HoverMasker = ({
   };
   useEffect(() => {
     updatePosition();
-  }, [componentId]);
+  }, [componentId,components]);
 
   const labelName = useMemo(() => {
     const component = getComponent(componentId, components);
-    return component?.name || "";
+    return component?.describe || "";
   }, [componentId]);
 
   return (
